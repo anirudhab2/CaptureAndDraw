@@ -7,21 +7,47 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8F4B38E61DFD9D0A00AEE34D /* Brush.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F4B38E51DFD9D0A00AEE34D /* Brush.swift */; };
+		8F4B38E81DFD9D6400AEE34D /* Drawing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F4B38E71DFD9D6400AEE34D /* Drawing.swift */; };
+		8F4B38EA1DFD9DF100AEE34D /* DrawingSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F4B38E91DFD9DF100AEE34D /* DrawingSession.swift */; };
+		8F4B38EC1DFD9E2C00AEE34D /* ColorPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F4B38EB1DFD9E2C00AEE34D /* ColorPalette.swift */; };
+		8F4B38EE1DFD9E9600AEE34D /* RoundColorButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F4B38ED1DFD9E9600AEE34D /* RoundColorButton.swift */; };
+		8F4B38F01DFD9F3E00AEE34D /* Canvas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F4B38EF1DFD9F3E00AEE34D /* Canvas.swift */; };
+		8F4B38F21DFDA75D00AEE34D /* Credits in Resources */ = {isa = PBXBuildFile; fileRef = 8F4B38F11DFDA75D00AEE34D /* Credits */; };
+		8F4B38F41DFDAC6500AEE34D /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F4B38F31DFDAC6500AEE34D /* Utilities.swift */; };
+		8F4B38F61DFDB01200AEE34D /* DrawingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F4B38F51DFDB01200AEE34D /* DrawingViewController.swift */; };
+		8F4B38F81DFDB11B00AEE34D /* DrawingToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F4B38F71DFDB11B00AEE34D /* DrawingToolbar.swift */; };
+		8F4B38FC1DFDF32600AEE34D /* BrushControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F4B38FB1DFDF32600AEE34D /* BrushControl.swift */; };
 		8F773BAD1DFB3EFB003F4592 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F773BAC1DFB3EFB003F4592 /* AppDelegate.swift */; };
-		8F773BAF1DFB3EFB003F4592 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F773BAE1DFB3EFB003F4592 /* ViewController.swift */; };
 		8F773BB21DFB3EFB003F4592 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8F773BB01DFB3EFB003F4592 /* Main.storyboard */; };
 		8F773BB41DFB3EFB003F4592 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8F773BB31DFB3EFB003F4592 /* Assets.xcassets */; };
 		8F773BB71DFB3EFB003F4592 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8F773BB51DFB3EFB003F4592 /* LaunchScreen.storyboard */; };
+		8F773BC31DFB43F5003F4592 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F773BC21DFB43F5003F4592 /* CameraViewController.swift */; };
+		8F773BC51DFB4436003F4592 /* ImagePreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F773BC41DFB4436003F4592 /* ImagePreviewViewController.swift */; };
+		8F773BC71DFB4BEF003F4592 /* CameraPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F773BC61DFB4BEF003F4592 /* CameraPreviewView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		8F4B38E51DFD9D0A00AEE34D /* Brush.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Brush.swift; sourceTree = "<group>"; };
+		8F4B38E71DFD9D6400AEE34D /* Drawing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Drawing.swift; sourceTree = "<group>"; };
+		8F4B38E91DFD9DF100AEE34D /* DrawingSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DrawingSession.swift; sourceTree = "<group>"; };
+		8F4B38EB1DFD9E2C00AEE34D /* ColorPalette.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorPalette.swift; sourceTree = "<group>"; };
+		8F4B38ED1DFD9E9600AEE34D /* RoundColorButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoundColorButton.swift; sourceTree = "<group>"; };
+		8F4B38EF1DFD9F3E00AEE34D /* Canvas.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Canvas.swift; sourceTree = "<group>"; };
+		8F4B38F11DFDA75D00AEE34D /* Credits */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Credits; sourceTree = "<group>"; };
+		8F4B38F31DFDAC6500AEE34D /* Utilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
+		8F4B38F51DFDB01200AEE34D /* DrawingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DrawingViewController.swift; sourceTree = "<group>"; };
+		8F4B38F71DFDB11B00AEE34D /* DrawingToolbar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DrawingToolbar.swift; sourceTree = "<group>"; };
+		8F4B38FB1DFDF32600AEE34D /* BrushControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrushControl.swift; sourceTree = "<group>"; };
 		8F773BA91DFB3EFB003F4592 /* CaptureAndDraw.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CaptureAndDraw.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8F773BAC1DFB3EFB003F4592 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		8F773BAE1DFB3EFB003F4592 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		8F773BB11DFB3EFB003F4592 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		8F773BB31DFB3EFB003F4592 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8F773BB61DFB3EFB003F4592 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8F773BB81DFB3EFB003F4592 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8F773BC21DFB43F5003F4592 /* CameraViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
+		8F773BC41DFB4436003F4592 /* ImagePreviewViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImagePreviewViewController.swift; sourceTree = "<group>"; };
+		8F773BC61DFB4BEF003F4592 /* CameraPreviewView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraPreviewView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -35,6 +61,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		8F4B38E41DFD9CEE00AEE34D /* DrawingKit */ = {
+			isa = PBXGroup;
+			children = (
+				8F4B38E51DFD9D0A00AEE34D /* Brush.swift */,
+				8F4B38E71DFD9D6400AEE34D /* Drawing.swift */,
+				8F4B38E91DFD9DF100AEE34D /* DrawingSession.swift */,
+				8F4B38ED1DFD9E9600AEE34D /* RoundColorButton.swift */,
+				8F4B38EB1DFD9E2C00AEE34D /* ColorPalette.swift */,
+				8F4B38F71DFDB11B00AEE34D /* DrawingToolbar.swift */,
+				8F4B38FB1DFDF32600AEE34D /* BrushControl.swift */,
+				8F4B38EF1DFD9F3E00AEE34D /* Canvas.swift */,
+			);
+			name = DrawingKit;
+			sourceTree = "<group>";
+		};
 		8F773BA01DFB3EFB003F4592 = {
 			isa = PBXGroup;
 			children = (
@@ -55,8 +96,14 @@
 			isa = PBXGroup;
 			children = (
 				8F773BAC1DFB3EFB003F4592 /* AppDelegate.swift */,
-				8F773BAE1DFB3EFB003F4592 /* ViewController.swift */,
 				8F773BB01DFB3EFB003F4592 /* Main.storyboard */,
+				8F773BC21DFB43F5003F4592 /* CameraViewController.swift */,
+				8F773BC61DFB4BEF003F4592 /* CameraPreviewView.swift */,
+				8F773BC41DFB4436003F4592 /* ImagePreviewViewController.swift */,
+				8F4B38F51DFDB01200AEE34D /* DrawingViewController.swift */,
+				8F4B38F31DFDAC6500AEE34D /* Utilities.swift */,
+				8F4B38E41DFD9CEE00AEE34D /* DrawingKit */,
+				8F4B38F11DFDA75D00AEE34D /* Credits */,
 				8F773BB31DFB3EFB003F4592 /* Assets.xcassets */,
 				8F773BB51DFB3EFB003F4592 /* LaunchScreen.storyboard */,
 				8F773BB81DFB3EFB003F4592 /* Info.plist */,
@@ -123,6 +170,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8F773BB71DFB3EFB003F4592 /* LaunchScreen.storyboard in Resources */,
+				8F4B38F21DFDA75D00AEE34D /* Credits in Resources */,
 				8F773BB41DFB3EFB003F4592 /* Assets.xcassets in Resources */,
 				8F773BB21DFB3EFB003F4592 /* Main.storyboard in Resources */,
 			);
@@ -135,8 +183,20 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8F773BAF1DFB3EFB003F4592 /* ViewController.swift in Sources */,
+				8F4B38FC1DFDF32600AEE34D /* BrushControl.swift in Sources */,
+				8F773BC71DFB4BEF003F4592 /* CameraPreviewView.swift in Sources */,
+				8F4B38F61DFDB01200AEE34D /* DrawingViewController.swift in Sources */,
 				8F773BAD1DFB3EFB003F4592 /* AppDelegate.swift in Sources */,
+				8F4B38F41DFDAC6500AEE34D /* Utilities.swift in Sources */,
+				8F4B38EA1DFD9DF100AEE34D /* DrawingSession.swift in Sources */,
+				8F4B38F01DFD9F3E00AEE34D /* Canvas.swift in Sources */,
+				8F4B38EC1DFD9E2C00AEE34D /* ColorPalette.swift in Sources */,
+				8F4B38E81DFD9D6400AEE34D /* Drawing.swift in Sources */,
+				8F4B38E61DFD9D0A00AEE34D /* Brush.swift in Sources */,
+				8F773BC51DFB4436003F4592 /* ImagePreviewViewController.swift in Sources */,
+				8F773BC31DFB43F5003F4592 /* CameraViewController.swift in Sources */,
+				8F4B38EE1DFD9E9600AEE34D /* RoundColorButton.swift in Sources */,
+				8F4B38F81DFDB11B00AEE34D /* DrawingToolbar.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -251,7 +311,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = CaptureAndDraw/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.anirudha.CaptureAndDraw;
+				PRODUCT_BUNDLE_IDENTIFIER = com.mindhive.test;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -262,7 +322,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = CaptureAndDraw/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.anirudha.CaptureAndDraw;
+				PRODUCT_BUNDLE_IDENTIFIER = com.mindhive.test;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -286,6 +346,7 @@
 				8F773BBD1DFB3EFB003F4592 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
