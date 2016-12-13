@@ -15,12 +15,15 @@ https://code.tutsplus.com/tutorials/smooth-freehand-drawing-on-ios--mobile-13164
 * Core Graphics for Drawing
 
 ## TODO
-- [ ] In addition to capture an image from camera, allow user to open images from iPhone gallery
+- [x] In addition to capture an image from camera, allow user to open images from iPhone gallery
 - [ ] Add Crop Functionality
 - [ ] Adding Texts, like Snapchat
 - [ ] Should add some Core Image filters, so it will be a proper image editing app
 
-## Image Credits
+## Icon Credits
+* Gallery icon by author **Freepik** from http://www.flaticon.com and is licensed by Creative Commons BY 3.0.
+(http://www.freepik.com or http://www.flaticon.com/authors/freepik)
+
 * Draw (pencil) icon by author **Freepik** from http://www.flaticon.com and is licensed by Creative Commons BY 3.0.
 (http://www.freepik.com or http://www.flaticon.com/authors/freepik)
 
