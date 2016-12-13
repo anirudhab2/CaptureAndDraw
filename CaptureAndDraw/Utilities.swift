@@ -11,7 +11,7 @@ import UIKit
 // Extension of UIImage so that asset names will be in form of enum, to avoid typos
 extension UIImage {
     enum AssetIdentifier: String {
-        case Brush, Cancel, Eraser, Pencil, Redo, Save, Share, Toggle, Undo
+        case Brush, Cancel, Eraser, Gallery, Pencil, Redo, Save, Share, Toggle, Undo
     }
     
     convenience init!(assetIdentifier: AssetIdentifier) {

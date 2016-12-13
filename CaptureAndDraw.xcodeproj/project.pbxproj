@@ -18,6 +18,7 @@
 		8F4B38F61DFDB01200AEE34D /* DrawingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F4B38F51DFDB01200AEE34D /* DrawingViewController.swift */; };
 		8F4B38F81DFDB11B00AEE34D /* DrawingToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F4B38F71DFDB11B00AEE34D /* DrawingToolbar.swift */; };
 		8F4B38FC1DFDF32600AEE34D /* BrushControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F4B38FB1DFDF32600AEE34D /* BrushControl.swift */; };
+		8F674B741E0065F600E073E8 /* CameraVC+UIImagePickerControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F674B731E0065F600E073E8 /* CameraVC+UIImagePickerControllerDelegate.swift */; };
 		8F773BAD1DFB3EFB003F4592 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F773BAC1DFB3EFB003F4592 /* AppDelegate.swift */; };
 		8F773BB21DFB3EFB003F4592 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8F773BB01DFB3EFB003F4592 /* Main.storyboard */; };
 		8F773BB41DFB3EFB003F4592 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8F773BB31DFB3EFB003F4592 /* Assets.xcassets */; };
@@ -39,6 +40,7 @@
 		8F4B38F51DFDB01200AEE34D /* DrawingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DrawingViewController.swift; sourceTree = "<group>"; };
 		8F4B38F71DFDB11B00AEE34D /* DrawingToolbar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DrawingToolbar.swift; sourceTree = "<group>"; };
 		8F4B38FB1DFDF32600AEE34D /* BrushControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrushControl.swift; sourceTree = "<group>"; };
+		8F674B731E0065F600E073E8 /* CameraVC+UIImagePickerControllerDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CameraVC+UIImagePickerControllerDelegate.swift"; sourceTree = "<group>"; };
 		8F773BA91DFB3EFB003F4592 /* CaptureAndDraw.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CaptureAndDraw.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8F773BAC1DFB3EFB003F4592 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8F773BB11DFB3EFB003F4592 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -98,6 +100,7 @@
 				8F773BAC1DFB3EFB003F4592 /* AppDelegate.swift */,
 				8F773BB01DFB3EFB003F4592 /* Main.storyboard */,
 				8F773BC21DFB43F5003F4592 /* CameraViewController.swift */,
+				8F674B731E0065F600E073E8 /* CameraVC+UIImagePickerControllerDelegate.swift */,
 				8F773BC61DFB4BEF003F4592 /* CameraPreviewView.swift */,
 				8F773BC41DFB4436003F4592 /* ImagePreviewViewController.swift */,
 				8F4B38F51DFDB01200AEE34D /* DrawingViewController.swift */,
@@ -191,6 +194,7 @@
 				8F4B38EA1DFD9DF100AEE34D /* DrawingSession.swift in Sources */,
 				8F4B38F01DFD9F3E00AEE34D /* Canvas.swift in Sources */,
 				8F4B38EC1DFD9E2C00AEE34D /* ColorPalette.swift in Sources */,
+				8F674B741E0065F600E073E8 /* CameraVC+UIImagePickerControllerDelegate.swift in Sources */,
 				8F4B38E81DFD9D6400AEE34D /* Drawing.swift in Sources */,
 				8F4B38E61DFD9D0A00AEE34D /* Brush.swift in Sources */,
 				8F773BC51DFB4436003F4592 /* ImagePreviewViewController.swift in Sources */,

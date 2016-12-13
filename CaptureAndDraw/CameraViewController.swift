@@ -25,6 +25,7 @@ class CameraViewController: UIViewController {
     private var captureButton: UIButton!
     private var toggleCameraButton: UIButton!
     private var toggleFlashButton: UIButton!
+    private var fileButton: UIButton!
     
     // MARK: Variables
     private var sessionQueue: dispatch_queue_t!
@@ -67,11 +68,15 @@ class CameraViewController: UIViewController {
         toggleCameraButton = UIButton(frame: CGRect(x: view.bounds.width/2-25, y: 0, width: 40, height: 40))
         toggleCameraButton.imageEdgeInsets = UIEdgeInsetsMake(10, 10, 10, 10)
         toggleCameraButton.setImage(UIImage(assetIdentifier: .Toggle), forState: .Normal)
-        
-        toggleCameraButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
-        toggleCameraButton.setTitleColor(UIColor.whiteColor().colorWithAlphaComponent(0.5), forState: .Highlighted)
         toggleCameraButton.addTarget(self, action: #selector(self.toggleCamera), forControlEvents: .TouchUpInside)
         view.addSubview(toggleCameraButton)
+        
+        
+        fileButton = UIButton(frame: CGRect(x: view.bounds.width-50, y: 0, width: 40, height: 40))
+        fileButton.imageEdgeInsets = UIEdgeInsetsMake(7.5, 7.5, 7.5, 7.5)
+        fileButton.setImage(UIImage(assetIdentifier: .Gallery), forState: .Normal)
+        fileButton.addTarget(self, action: #selector(self.openFromGallery), forControlEvents: .TouchUpInside)
+        view.addSubview(fileButton)
         
         
         let tap = UITapGestureRecognizer(target: self, action: #selector(self.focusAndExposureTap(_:)))
@@ -438,7 +443,7 @@ class CameraViewController: UIViewController {
         }
     }
     
-    private func goToPreviewImage(image: UIImage) {
+    func goToPreviewImage(image: UIImage) {
         dispatch_async(dispatch_get_main_queue()) { 
             let vc = self.storyboard?.instantiateViewControllerWithIdentifier("ImagePreviewViewController") as! ImagePreviewViewController
             vc.imageToPreview = image
