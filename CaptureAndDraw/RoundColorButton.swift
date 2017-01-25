@@ -24,9 +24,9 @@ class RoundColorButton: UIButton {
         }
     }
     
-    var borderColor: UIColor = UIColor.whiteColor() {
+    var borderColor: UIColor = UIColor.white {
         didSet {
-            self.layer.borderColor = borderColor.CGColor
+            self.layer.borderColor = borderColor.cgColor
         }
     }
     
@@ -47,7 +47,7 @@ class RoundColorButton: UIButton {
         self.backgroundColor = color
         
         self.layer.cornerRadius = self.bounds.width/2
-        self.layer.borderColor = borderColor.CGColor
+        self.layer.borderColor = borderColor.cgColor
         self.layer.borderWidth = borderWidth
     }
     

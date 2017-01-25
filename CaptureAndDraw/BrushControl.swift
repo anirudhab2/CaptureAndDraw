@@ -10,17 +10,17 @@ import UIKit
 
 @objc
 protocol BrushControlDelegate {
-    func brushControl(brushControl: BrushControl, didChangeBrushWidth width: CGFloat)
+    func brushControl(_ brushControl: BrushControl, didChangeBrushWidth width: CGFloat)
 }
 
 class BrushControl: UIView {
 
     weak var delegate: BrushControlDelegate?
     
-    private let scale = UIScreen.mainScreen().scale
+    fileprivate let scale = UIScreen.main.scale
     
-    private var brushSizeSlider: UISlider!
-    private var brushSizeIndicator: UIView!
+    fileprivate var brushSizeSlider: UISlider!
+    fileprivate var brushSizeIndicator: UIView!
     
     var brushColor: UIColor? {
         get {
@@ -39,7 +39,7 @@ class BrushControl: UIView {
             brushSizeSlider.setValue(Float(newValue), animated: false)
             
             let newWidth = newValue/scale
-            brushSizeIndicator.frame.size = CGSizeMake(newWidth, newWidth)
+            brushSizeIndicator.frame.size = CGSize(width: newWidth, height: newWidth)
             brushSizeIndicator.center.y = brushSizeSlider.frame.midY
             brushSizeIndicator.layer.cornerRadius = brushSizeIndicator.bounds.width/2
         }
@@ -55,21 +55,21 @@ class BrushControl: UIView {
         initialize()
     }
     
-    private func initialize() {
+    fileprivate func initialize() {
         brushSizeSlider = UISlider(frame: CGRect(x: self.bounds.width/2-75, y: 0, width: 150, height: self.bounds.height))
         brushSizeSlider.minimumValue = 5.0
         brushSizeSlider.maximumValue = 50.0
-        brushSizeSlider.addTarget(self, action: #selector(self.brushSizeSliderValueChanged(_:)), forControlEvents: .ValueChanged)
+        brushSizeSlider.addTarget(self, action: #selector(self.brushSizeSliderValueChanged(_:)), for: .valueChanged)
         self.addSubview(brushSizeSlider)
         
         
         brushSizeIndicator = UIView(frame: CGRect(x: brushSizeSlider.frame.maxX+20, y: brushSizeSlider.frame.midY, width: brushWidth, height: brushWidth))
-        brushSizeIndicator.backgroundColor = UIColor.blackColor()
+        brushSizeIndicator.backgroundColor = UIColor.black
         brushSizeIndicator.layer.cornerRadius = brushSizeIndicator.bounds.width/2
         self.addSubview(brushSizeIndicator)
     }
     
-    func brushSizeSliderValueChanged(slider: UISlider) {
+    func brushSizeSliderValueChanged(_ slider: UISlider) {
         let width = CGFloat(slider.value)
         brushWidth = width
         delegate?.brushControl(self, didChangeBrushWidth: width)

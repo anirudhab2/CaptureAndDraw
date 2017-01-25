@@ -13,11 +13,11 @@ class ImagePreviewViewController: UIViewController {
 
     var imageToPreview: UIImage!
     
-    private var imageView: UIImageView!
-    private var saveButton: UIButton!
-    private var cancelButton: UIButton!
-    private var drawButton: UIButton!
-    private var shareButton: UIButton!
+    fileprivate var imageView: UIImageView!
+    fileprivate var saveButton: UIButton!
+    fileprivate var cancelButton: UIButton!
+    fileprivate var drawButton: UIButton!
+    fileprivate var shareButton: UIButton!
     
     
     override func viewDidLoad() {
@@ -26,17 +26,17 @@ class ImagePreviewViewController: UIViewController {
         setupSubviews()
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         if let validImage = imageToPreview {
             imageView.image = validImage
         } else {
-            saveButton.enabled = false
-            shareButton.enabled = false
+            saveButton.isEnabled = false
+            shareButton.isEnabled = false
         }
     }
     
-    override func prefersStatusBarHidden() -> Bool {
+    override var prefersStatusBarHidden : Bool {
         return true
     }
     
@@ -46,7 +46,7 @@ class ImagePreviewViewController: UIViewController {
     }
     
     
-    private func setupSubviews() {
+    fileprivate func setupSubviews() {
         
         imageView = UIImageView(frame: view.bounds)
         view.addSubview(imageView)
@@ -54,80 +54,80 @@ class ImagePreviewViewController: UIViewController {
         
         saveButton = UIButton(frame: CGRect(x: 10, y: 0, width: 40, height: 40))
         saveButton.imageEdgeInsets = UIEdgeInsetsMake(10, 10, 10, 10)
-        saveButton.setImage(UIImage(assetIdentifier: .Save), forState: .Normal)
-        saveButton.addTarget(self, action: #selector(self.saveTapped), forControlEvents: .TouchUpInside)
+        saveButton.setImage(UIImage(assetIdentifier: .Save), for: UIControlState())
+        saveButton.addTarget(self, action: #selector(self.saveTapped), for: .touchUpInside)
         view.addSubview(saveButton)
         
         
         cancelButton = UIButton(frame: CGRect(x: 60, y: 0, width: 40, height: 40))
         cancelButton.imageEdgeInsets = UIEdgeInsetsMake(10, 10, 10, 10)
-        cancelButton.setImage(UIImage(assetIdentifier: .Cancel), forState: .Normal)
-        cancelButton.addTarget(self, action: #selector(self.cancelTapped), forControlEvents: .TouchUpInside)
+        cancelButton.setImage(UIImage(assetIdentifier: .Cancel), for: UIControlState())
+        cancelButton.addTarget(self, action: #selector(self.cancelTapped), for: .touchUpInside)
         view.addSubview(cancelButton)
         
         
         drawButton = UIButton(frame: CGRect(x: view.bounds.width-100, y: 0, width: 40, height: 40))
         drawButton.imageEdgeInsets = UIEdgeInsetsMake(10, 10, 10, 10)
-        drawButton.setImage(UIImage(assetIdentifier: .Pencil), forState: .Normal)
-        drawButton.addTarget(self, action: #selector(self.drawTapped), forControlEvents: .TouchUpInside)
+        drawButton.setImage(UIImage(assetIdentifier: .Pencil), for: UIControlState())
+        drawButton.addTarget(self, action: #selector(self.drawTapped), for: .touchUpInside)
         view.addSubview(drawButton)
         
         
         shareButton = UIButton(frame: CGRect(x: view.bounds.width-50, y: 0, width: 40, height: 40))
         shareButton.imageEdgeInsets = UIEdgeInsetsMake(10, 10, 10, 10)
-        shareButton.setImage(UIImage(assetIdentifier: .Share), forState: .Normal)
-        shareButton.addTarget(self, action: #selector(self.shareTapped), forControlEvents: .TouchUpInside)
+        shareButton.setImage(UIImage(assetIdentifier: .Share), for: UIControlState())
+        shareButton.addTarget(self, action: #selector(self.shareTapped), for: .touchUpInside)
         view.addSubview(shareButton)
     }
     
     
     func saveTapped() {
         PHPhotoLibrary.requestAuthorization({(status: PHAuthorizationStatus) in
-            if (status == PHAuthorizationStatus.Authorized) {
+            if (status == PHAuthorizationStatus.authorized) {
                 self.saveImageToGallery(self.imageToPreview)
             } else {
                 
-                dispatch_async(dispatch_get_main_queue(), {
+                DispatchQueue.main.async(execute: {
                     
-                    let alertController = UIAlertController(title: "Alert", message: "Please allow", preferredStyle: .Alert)
+                    let alertController = UIAlertController(title: "Alert", message: "Please allow", preferredStyle: .alert)
                     
-                    let settingsAction = UIAlertAction(title: "Settings", style: .Default, handler: { (action) in
-                        UIApplication.sharedApplication().openURL(NSURL(string: UIApplicationOpenSettingsURLString)!)
+                    let settingsAction = UIAlertAction(title: "Settings", style: .default, handler: { (action) in
+                        UIApplication.shared.openURL(URL(string: UIApplicationOpenSettingsURLString)!)
                     })
-                    let cancelAction = UIAlertAction(title: "Cancel", style: .Default, handler: nil)
+                    let cancelAction = UIAlertAction(title: "Cancel", style: .default, handler: nil)
                     alertController.addAction(settingsAction)
                     alertController.addAction(cancelAction)
-                    self.presentViewController(alertController, animated: true, completion: nil)
+                    self.present(alertController, animated: true, completion: nil)
                 })
             }
         })
     }
     
     func cancelTapped() {
-        dispatch_async(dispatch_get_main_queue(), {
-            self.dismissViewControllerAnimated(true, completion: nil)
+        DispatchQueue.main.async(execute: {
+            self.dismiss(animated: true, completion: nil)
         })
     }
     
     func drawTapped() {
-        dispatch_async(dispatch_get_main_queue(), {
-            let vc = self.storyboard?.instantiateViewControllerWithIdentifier("DrawingViewController") as! DrawingViewController
+        DispatchQueue.main.async(execute: {
+            let vc = self.storyboard?.instantiateViewController(withIdentifier: "DrawingViewController") as! DrawingViewController
             vc.imageToEdit = self.imageToPreview
-            self.presentViewController(vc, animated: false, completion: nil)
+            self.present(vc, animated: false, completion: nil)
         })
     }
     
     func shareTapped() {
-        dispatch_async(dispatch_get_main_queue()) { 
+        DispatchQueue.main.async { 
             let imageItem = self.imageToPreview as AnyObject
             
             let activityVC = UIActivityViewController(activityItems: [imageItem], applicationActivities: nil)
-            self.presentViewController(activityVC, animated: true, completion: nil)
+            self.present(activityVC, animated: true, completion: nil)
         }
     }
 
     
-    private func saveImageToGallery(image: UIImage) {
+    fileprivate func saveImageToGallery(_ image: UIImage) {
         
         guard let imageData = UIImageJPEGRepresentation(image, 1.0) else {
             print("Invalid image data, can't save")
@@ -135,22 +135,22 @@ class ImagePreviewViewController: UIViewController {
         }
         
         let tempFileName: NSString = "tempImage"
-        let tempFilePath = (NSTemporaryDirectory() as NSString).stringByAppendingPathComponent(tempFileName.stringByAppendingPathExtension("jpg")!)
-        let tempFileUrl = NSURL(fileURLWithPath: tempFilePath)
+        let tempFilePath = (NSTemporaryDirectory() as NSString).appendingPathComponent(tempFileName.appendingPathExtension("jpg")!)
+        let tempFileUrl = URL(fileURLWithPath: tempFilePath)
         
         var err: NSError?
         
-        PHPhotoLibrary.sharedPhotoLibrary().performChanges({ 
+        PHPhotoLibrary.shared().performChanges({ 
             
             do {
                 
-                if NSFileManager.defaultManager().fileExistsAtPath(tempFilePath) {
-                    try NSFileManager.defaultManager().removeItemAtPath(tempFilePath)
+                if FileManager.default.fileExists(atPath: tempFilePath) {
+                    try FileManager.default.removeItem(atPath: tempFilePath)
                     print("Removed existing file")
                 }
                 
-                try imageData.writeToURL(tempFileUrl, options: .AtomicWrite)
-                PHAssetChangeRequest.creationRequestForAssetFromImageAtFileURL(tempFileUrl)
+                try imageData.write(to: tempFileUrl, options: .atomicWrite)
+                PHAssetChangeRequest.creationRequestForAssetFromImage(atFileURL: tempFileUrl)
                 
             } catch let error as NSError {
                 print("Error while saving image to gallery: \(err)")
@@ -161,8 +161,8 @@ class ImagePreviewViewController: UIViewController {
                 
                 if (err == nil && success == true) {
                     // Show success message
-                    dispatch_async(dispatch_get_main_queue(), { 
-                        self.dismissViewControllerAnimated(true, completion: nil)
+                    DispatchQueue.main.async(execute: { 
+                        self.dismiss(animated: true, completion: nil)
                     })
                     
                 } else {

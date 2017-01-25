@@ -10,17 +10,17 @@ import UIKit
 
 @objc
 protocol ColorPaletteDelegate {
-    func colorPalette(colorPalette: ColorPalette, didChooseColor color: UIColor)
+    func colorPalette(_ colorPalette: ColorPalette, didChooseColor color: UIColor)
 }
 
 class ColorPalette: UIView {
 
     weak var delegate: ColorPaletteDelegate?
-    var selectedColor: UIColor = UIColor.blackColor()
+    var selectedColor: UIColor = UIColor.black
     
-    private let colorList: [UIColor] = [UIColor.blackColor(), UIColor.darkGrayColor(), UIColor.grayColor(), UIColor.lightGrayColor(), UIColor.whiteColor(), UIColor.cyanColor(), UIColor.blueColor(), UIColor.purpleColor(), UIColor.magentaColor(), UIColor.redColor(), UIColor.orangeColor(), UIColor.yellowColor(), UIColor.greenColor(), UIColor.brownColor()]
+    fileprivate let colorList: [UIColor] = [UIColor.black, UIColor.darkGray, UIColor.gray, UIColor.lightGray, UIColor.white, UIColor.cyan, UIColor.blue, UIColor.purple, UIColor.magenta, UIColor.red, UIColor.orange, UIColor.yellow, UIColor.green, UIColor.brown]
     
-    private var collectionView: UICollectionView!
+    fileprivate var collectionView: UICollectionView!
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -32,7 +32,7 @@ class ColorPalette: UIView {
         initialize()
     }
     
-    private func initialize() {
+    fileprivate func initialize() {
         
         let interItemPadding: CGFloat = 20.0
         
@@ -40,17 +40,17 @@ class ColorPalette: UIView {
         let flowLayout = UICollectionViewFlowLayout()
         flowLayout.itemSize = CGSize(width: self.bounds.height, height: self.bounds.height)
         flowLayout.minimumLineSpacing = interItemPadding
-        flowLayout.scrollDirection = .Horizontal
+        flowLayout.scrollDirection = .horizontal
         
         collectionView = UICollectionView(frame: self.bounds, collectionViewLayout: flowLayout)
         collectionView.contentInset.left = interItemPadding/2
-        collectionView.backgroundColor = UIColor.clearColor()
+        collectionView.backgroundColor = UIColor.clear
         collectionView.allowsMultipleSelection = false
         collectionView.allowsSelection = true
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.dataSource = self
         collectionView.delegate = self
-        collectionView.registerClass(PaletteCell.self, forCellWithReuseIdentifier: "PaletteCell")
+        collectionView.register(PaletteCell.self, forCellWithReuseIdentifier: "PaletteCell")
         self.addSubview(collectionView)
     }
     
@@ -58,18 +58,18 @@ class ColorPalette: UIView {
 
 extension ColorPalette: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
-    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return colorList.count
     }
     
-    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("PaletteCell", forIndexPath: indexPath) as! PaletteCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PaletteCell", for: indexPath) as! PaletteCell
         cell.color = colorList[indexPath.row]
         return cell
     }
     
-    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         let selectedColor = colorList[indexPath.row]
         self.selectedColor = selectedColor
@@ -79,9 +79,9 @@ extension ColorPalette: UICollectionViewDataSource, UICollectionViewDelegateFlow
 
 class PaletteCell: UICollectionViewCell {
     
-    private var colorButton: RoundColorButton!
+    fileprivate var colorButton: RoundColorButton!
     
-    var color: UIColor = UIColor.clearColor() {
+    var color: UIColor = UIColor.clear {
         didSet {
             colorButton.color = color
         }
@@ -97,11 +97,11 @@ class PaletteCell: UICollectionViewCell {
         initialize()
     }
     
-    private func initialize() {
+    fileprivate func initialize() {
         let cellCenter = CGPoint(x: self.bounds.midX, y: self.bounds.midY)
         let diameter = min(self.bounds.width, self.bounds.height)
-        colorButton = RoundColorButton(center: cellCenter, diameter: diameter, color: UIColor.clearColor())
-        colorButton.enabled = false
+        colorButton = RoundColorButton(center: cellCenter, diameter: diameter, color: UIColor.clear)
+        colorButton.isEnabled = false
         self.addSubview(colorButton)
     }
 }

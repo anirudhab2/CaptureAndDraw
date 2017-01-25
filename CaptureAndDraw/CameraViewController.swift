@@ -10,72 +10,79 @@ import UIKit
 import AVFoundation
 
 // Session context for KVO
-private let CapturingStillImageContext = UnsafeMutablePointer<Void>.alloc(1)
-private let SessionRunningContext = UnsafeMutablePointer<Void>.alloc(1)
+//private let CapturingStillImageContext = UnsafeMutableRawPointer.allocate(capacity: 1)
+//private let SessionRunningContext = UnsafeMutableRawPointer.allocate(capacity: 1)
+
+
+
 
 private enum CameraSetupResult: Int {
-    case Success, Unauthorized, ConfigurationFailed
+    case success, unauthorized, configurationFailed
 }
 
 // MARK: - Main Class
 class CameraViewController: UIViewController {
     
     // MARK: Subviews
-    private var previewView: CameraPreviewView!
-    private var captureButton: UIButton!
-    private var toggleCameraButton: UIButton!
-    private var toggleFlashButton: UIButton!
-    private var fileButton: UIButton!
+    fileprivate var previewView: CameraPreviewView!
+    fileprivate var captureButton: UIButton!
+    fileprivate var toggleCameraButton: UIButton!
+    fileprivate var toggleFlashButton: UIButton!
+    fileprivate var fileButton: UIButton!
     
     // MARK: Variables
-    private var sessionQueue: dispatch_queue_t!
-    private var captureSession: AVCaptureSession!
-    private var captureDeviceInput: AVCaptureDeviceInput!
-    private var stillImageOutput: AVCaptureStillImageOutput!
+    fileprivate var sessionQueue: DispatchQueue!
+    fileprivate var captureSession: AVCaptureSession!
+    fileprivate var captureDeviceInput: AVCaptureDeviceInput!
+    fileprivate var stillImageOutput: AVCaptureStillImageOutput!
     
     
-    private var cameraSetupResult: CameraSetupResult = .Success
-    private var isSessionRunning: Bool = false
+    fileprivate var cameraSetupResult: CameraSetupResult = .success
+    fileprivate var isSessionRunning: Bool = false
+    
+    // MARK: Pointers
+    fileprivate var sessionRunningContext = "SessionRunningContext"
+    fileprivate var capturingStillImageContext = "CapturingStillImageContext"
     
     
     // MARK: View Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = UIColor.blackColor()
+        view.backgroundColor = UIColor.black
         
         previewView = CameraPreviewView(frame: view.bounds)
         view.addSubview(previewView)
         
         captureButton = UIButton(frame: CGRect(x: 0, y: 0, width: 60, height: 60))
         captureButton.center = CGPoint(x: view.center.x, y: view.bounds.height - 100)
-        captureButton.backgroundColor = UIColor.clearColor()
+        captureButton.backgroundColor = UIColor.clear
         captureButton.layer.cornerRadius = captureButton.bounds.width/2
         captureButton.layer.borderWidth = 5.0
-        captureButton.layer.borderColor = UIColor.whiteColor().CGColor
-        captureButton.addTarget(self, action: #selector(self.snapPhoto), forControlEvents: .TouchUpInside)
+        captureButton.layer.borderColor = UIColor.white.cgColor
+        captureButton.addTarget(self, action: #selector(self.snapPhoto), for: .touchUpInside)
         view.addSubview(captureButton)
         
         
         toggleFlashButton = UIButton(frame: CGRect(x: 10, y: 0, width: 50, height: 40))
-        toggleFlashButton.setTitle("Auto", forState: .Normal)
-        toggleFlashButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
-        toggleFlashButton.setTitleColor(UIColor.whiteColor().colorWithAlphaComponent(0.5), forState: .Highlighted)
-        toggleFlashButton.addTarget(self, action: #selector(self.toggleFlash), forControlEvents: .TouchUpInside)
+        toggleFlashButton.setTitle("Auto", for: UIControlState())
+        toggleFlashButton.setTitleColor(UIColor.white, for: UIControlState())
+        toggleFlashButton.setTitleColor(UIColor.white.withAlphaComponent(0.5), for: .highlighted)
+        toggleFlashButton.addTarget(self, action: #selector(self.toggleFlash), for: .touchUpInside)
         view.addSubview(toggleFlashButton)
         
         
         toggleCameraButton = UIButton(frame: CGRect(x: view.bounds.width/2-25, y: 0, width: 40, height: 40))
         toggleCameraButton.imageEdgeInsets = UIEdgeInsetsMake(10, 10, 10, 10)
-        toggleCameraButton.setImage(UIImage(assetIdentifier: .Toggle), forState: .Normal)
-        toggleCameraButton.addTarget(self, action: #selector(self.toggleCamera), forControlEvents: .TouchUpInside)
+        toggleCameraButton.setImage(UIImage(assetIdentifier: .Toggle), for: UIControlState())
+        toggleCameraButton.addTarget(self, action: #selector(self.toggleCamera), for: .touchUpInside)
         view.addSubview(toggleCameraButton)
         
         
         fileButton = UIButton(frame: CGRect(x: view.bounds.width-50, y: 0, width: 40, height: 40))
         fileButton.imageEdgeInsets = UIEdgeInsetsMake(7.5, 7.5, 7.5, 7.5)
-        fileButton.setImage(UIImage(assetIdentifier: .Gallery), forState: .Normal)
-        fileButton.addTarget(self, action: #selector(self.openFromGallery), forControlEvents: .TouchUpInside)
+        fileButton.setImage(UIImage(assetIdentifier: .Gallery), for: UIControlState())
+        fileButton.addTarget(self, action: #selector(self.openFromGallery), for: .touchUpInside)
         view.addSubview(fileButton)
         
         
@@ -86,52 +93,52 @@ class CameraViewController: UIViewController {
         setupCameraSessions()
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        dispatch_async(sessionQueue) {
+        sessionQueue.async {
             
             switch self.cameraSetupResult {
-            case .Success:
+            case .success:
                 self.addObservers()
                 self.captureSession.startRunning()
-                self.isSessionRunning = self.captureSession.running
+                self.isSessionRunning = self.captureSession.isRunning
                 
-            case .Unauthorized:
-                dispatch_async(dispatch_get_main_queue(), { 
+            case .unauthorized:
+                DispatchQueue.main.async(execute: { 
                     let message = "Please allow"
-                    let alertController = UIAlertController(title: "Alert", message: message, preferredStyle: .Alert)
+                    let alertController = UIAlertController(title: "Alert", message: message, preferredStyle: .alert)
                     
-                    let settingsAction = UIAlertAction(title: "Settings", style: .Default, handler: { (action) in
-                        UIApplication.sharedApplication().openURL(NSURL(string: UIApplicationOpenSettingsURLString)!)
+                    let settingsAction = UIAlertAction(title: "Settings", style: .default, handler: { (action) in
+                        UIApplication.shared.openURL(URL(string: UIApplicationOpenSettingsURLString)!)
                     })
                     
-                    let cancelAction = UIAlertAction(title: "Cancel", style: .Default, handler: nil)
+                    let cancelAction = UIAlertAction(title: "Cancel", style: .default, handler: nil)
                     
                     alertController.addAction(settingsAction)
                     alertController.addAction(cancelAction)
                     
-                    self.presentViewController(alertController, animated: true, completion: nil)
+                    self.present(alertController, animated: true, completion: nil)
                 })
                 
-            case .ConfigurationFailed:
-                dispatch_async(dispatch_get_main_queue(), {
+            case .configurationFailed:
+                DispatchQueue.main.async(execute: {
                     let message = "Configuration Failed"
-                    let alertController = UIAlertController(title: "Alert", message: message, preferredStyle: .Alert)
+                    let alertController = UIAlertController(title: "Alert", message: message, preferredStyle: .alert)
                     
-                    let cancelAction = UIAlertAction(title: "Cancel", style: .Default, handler: nil)
+                    let cancelAction = UIAlertAction(title: "Cancel", style: .default, handler: nil)
                     alertController.addAction(cancelAction)
                     
-                    self.presentViewController(alertController, animated: true, completion: nil)
+                    self.present(alertController, animated: true, completion: nil)
                 })
             }
         }
     }
     
-    override func viewDidDisappear(animated: Bool) {
+    override func viewDidDisappear(_ animated: Bool) {
         
-        dispatch_async(sessionQueue) { 
-            if (self.cameraSetupResult == .Success) {
+        sessionQueue.async { 
+            if (self.cameraSetupResult == .success) {
                 self.captureSession.stopRunning()
                 self.removeObservers()
             }
@@ -139,7 +146,7 @@ class CameraViewController: UIViewController {
         super.viewDidDisappear(animated)
     }
     
-    override func prefersStatusBarHidden() -> Bool {
+    override var prefersStatusBarHidden : Bool {
         return true
     }
 
@@ -150,18 +157,18 @@ class CameraViewController: UIViewController {
     
     
     // MARK: Initial Camera Setup
-    private func setupCameraSessions() {
+    fileprivate func setupCameraSessions() {
         
         captureSession = AVCaptureSession()
         previewView.session = captureSession
         
-        sessionQueue = dispatch_queue_create("SessionQueue", DISPATCH_QUEUE_SERIAL)
+        sessionQueue = DispatchQueue(label: "SessionQueue", attributes: [])
         
         checkCameraAuthorizationStatus()
         
-        dispatch_async(sessionQueue) {
+        sessionQueue.async {
             
-            guard (self.cameraSetupResult == .Success) else {
+            guard (self.cameraSetupResult == .success) else {
                 return
             }
             
@@ -170,7 +177,7 @@ class CameraViewController: UIViewController {
             self.addCaptureDeviceInput()
             self.addStillImageOutput()
             if let captureInput = self.captureDeviceInput {
-                self.setFlashMode(.Auto, forDevice: captureInput.device)
+                self.setFlashMode(.auto, forDevice: captureInput.device)
             }
             
             
@@ -180,29 +187,29 @@ class CameraViewController: UIViewController {
         
     }
     
-    private func checkCameraAuthorizationStatus() {
-        cameraSetupResult = .Success
+    fileprivate func checkCameraAuthorizationStatus() {
+        cameraSetupResult = .success
         
-        switch AVCaptureDevice.authorizationStatusForMediaType(AVMediaTypeVideo) {
-        case .Authorized:
+        switch AVCaptureDevice.authorizationStatus(forMediaType: AVMediaTypeVideo) {
+        case .authorized:
             break
-        case .NotDetermined:
-            dispatch_suspend(sessionQueue)
+        case .notDetermined:
+            sessionQueue.suspend()
             
-            AVCaptureDevice.requestAccessForMediaType(AVMediaTypeVideo, completionHandler: { (granted) in
+            AVCaptureDevice.requestAccess(forMediaType: AVMediaTypeVideo, completionHandler: { (granted) in
                 if (granted == false) {
-                    self.cameraSetupResult = .Unauthorized
+                    self.cameraSetupResult = .unauthorized
                 }
-                dispatch_resume(self.sessionQueue)
+                self.sessionQueue.resume()
             })
             
         default:
-            cameraSetupResult = .Unauthorized
+            cameraSetupResult = .unauthorized
         }
     }
     
-    private func addCaptureDeviceInput() {
-        let videoDevice = captureDeviceAtPosition(.Back)
+    fileprivate func addCaptureDeviceInput() {
+        let videoDevice = captureDeviceAtPosition(.back)
         var videoDeviceInput: AVCaptureDeviceInput!
         
         var error: NSError!
@@ -218,18 +225,18 @@ class CameraViewController: UIViewController {
             captureDeviceInput = videoDeviceInput
             captureSession.addInput(videoDeviceInput)
             
-            dispatch_async(dispatch_get_main_queue(), { 
-                let orientation = AVCaptureVideoOrientation.Portrait
+            DispatchQueue.main.async(execute: { 
+                let orientation = AVCaptureVideoOrientation.portrait
                 let previewLayer = self.previewView.layer as! AVCaptureVideoPreviewLayer
                 previewLayer.connection.videoOrientation = orientation
             })
             
         } else {
-            cameraSetupResult = .ConfigurationFailed
+            cameraSetupResult = .configurationFailed
         }
     }
     
-    private func addStillImageOutput() {
+    fileprivate func addStillImageOutput() {
         let imageOutput = AVCaptureStillImageOutput()
         
         if (captureSession.canAddOutput(imageOutput)) {
@@ -237,14 +244,14 @@ class CameraViewController: UIViewController {
             captureSession.addOutput(imageOutput)
             stillImageOutput = imageOutput
         } else {
-            cameraSetupResult = .ConfigurationFailed
+            cameraSetupResult = .configurationFailed
         }
     }
     
     
     // MARK: Camera Utilities
-    private func captureDeviceAtPosition(position: AVCaptureDevicePosition) -> AVCaptureDevice? {
-        let devices = AVCaptureDevice.devicesWithMediaType(AVMediaTypeVideo) as! [AVCaptureDevice]
+    fileprivate func captureDeviceAtPosition(_ position: AVCaptureDevicePosition) -> AVCaptureDevice? {
+        let devices = AVCaptureDevice.devices(withMediaType: AVMediaTypeVideo) as! [AVCaptureDevice]
         
         if (devices.isEmpty) {
             print("The device doesn't have any capture device, may it is simulator")
@@ -263,7 +270,7 @@ class CameraViewController: UIViewController {
         return captureDevice
     }
     
-    private func setFlashMode(flashMode: AVCaptureFlashMode, forDevice device: AVCaptureDevice) {
+    fileprivate func setFlashMode(_ flashMode: AVCaptureFlashMode, forDevice device: AVCaptureDevice) {
         if (device.hasFlash && device.isFlashModeSupported(flashMode)) {
             do {
                 try device.lockForConfiguration()
@@ -271,49 +278,49 @@ class CameraViewController: UIViewController {
                 device.unlockForConfiguration()
                 
                 var flashTitle = ""
-                if (flashMode == .Auto) {
+                if (flashMode == .auto) {
                     flashTitle = "Auto"
-                } else if (flashMode == .On) {
+                } else if (flashMode == .on) {
                     flashTitle = "On"
                 } else {
                     flashTitle = "Off"
                 }
                 
-                dispatch_async(dispatch_get_main_queue(), {
-                    self.toggleFlashButton.setTitle(flashTitle, forState: .Normal)
+                DispatchQueue.main.async(execute: {
+                    self.toggleFlashButton.setTitle(flashTitle, for: UIControlState())
                 })
                 
             } catch let error as NSError {
                 print("flash configuration failed: \(error.localizedDescription)")
             }
         } else {
-            dispatch_async(dispatch_get_main_queue(), {
-                self.toggleFlashButton.setTitle("Off", forState: .Normal)
+            DispatchQueue.main.async(execute: {
+                self.toggleFlashButton.setTitle("Off", for: UIControlState())
             })
         }
     }
     
-    private func focusWithMode(focusMode: AVCaptureFocusMode, exposureWithMode exposureMode: AVCaptureExposureMode, atDevicePoint point: CGPoint, monitorSubjectAreaChange: Bool) {
+    fileprivate func focusWithMode(_ focusMode: AVCaptureFocusMode, exposureWithMode exposureMode: AVCaptureExposureMode, atDevicePoint point: CGPoint, monitorSubjectAreaChange: Bool) {
         
-        dispatch_async(sessionQueue) {
+        sessionQueue.async {
             if let device = self.captureDeviceInput.device {
                 do {
                     try device.lockForConfiguration()
                     
-                    if (device.focusPointOfInterestSupported && device.isFocusModeSupported(focusMode)) {
+                    if (device.isFocusPointOfInterestSupported && device.isFocusModeSupported(focusMode)) {
                         device.focusPointOfInterest = point
                         device.focusMode = focusMode
                     }
-                    if (device.exposurePointOfInterestSupported && device.isExposureModeSupported(exposureMode)) {
+                    if (device.isExposurePointOfInterestSupported && device.isExposureModeSupported(exposureMode)) {
                         device.exposurePointOfInterest = point
                         device.exposureMode = exposureMode
                     }
                     
-                    if (device.isWhiteBalanceModeSupported(.ContinuousAutoWhiteBalance)) {
-                        device.whiteBalanceMode = .ContinuousAutoWhiteBalance
+                    if (device.isWhiteBalanceModeSupported(.continuousAutoWhiteBalance)) {
+                        device.whiteBalanceMode = .continuousAutoWhiteBalance
                     }
                     
-                    device.subjectAreaChangeMonitoringEnabled = monitorSubjectAreaChange
+                    device.isSubjectAreaChangeMonitoringEnabled = monitorSubjectAreaChange
                     
                 } catch let error as NSError {
                     print("focus and exposure setup failed: \(error.localizedDescription)")
@@ -326,52 +333,55 @@ class CameraViewController: UIViewController {
     // MARK: Actions
     func toggleFlash() {
         // For Back: Auto -> On -> Off, For Front, only Off
-        dispatch_async(sessionQueue) {
+        sessionQueue.async {
             
-            guard (self.captureDeviceInput != nil) else {
+            guard (self.captureDeviceInput != nil),
+                let currentCaptureDevice = self.captureDeviceInput.device else {
                 return
             }
             
-            let currentCaptureDevice = self.captureDeviceInput.device
+//            let currentCaptureDevice = self.captureDeviceInput.device
             let currentPosition = currentCaptureDevice.position
             
-            var preferredFlashMode = AVCaptureFlashMode.Off
+            var preferredFlashMode = AVCaptureFlashMode.off
             
-            if (currentPosition == .Back) {
+            if (currentPosition == .back) {
                 let currentFlashMode = currentCaptureDevice.flashMode
                 
                 switch currentFlashMode {
-                case .Auto:
-                    preferredFlashMode = .On
-                case .On:
-                    preferredFlashMode = .Off
-                case .Off:
-                    preferredFlashMode = .Auto
+                case .auto:
+                    preferredFlashMode = .on
+                case .on:
+                    preferredFlashMode = .off
+                case .off:
+                    preferredFlashMode = .auto
                 }
-                self.setFlashMode(preferredFlashMode, forDevice: currentCaptureDevice)
             }
+            
+            self.setFlashMode(preferredFlashMode, forDevice: currentCaptureDevice)
         }
     }
     
     
     
     func toggleCamera() {
-        dispatch_async(sessionQueue) { 
+        sessionQueue.async { 
             
-            guard (self.captureDeviceInput != nil) else {
+            guard (self.captureDeviceInput != nil),
+            let currentCaptureDevice = self.captureDeviceInput.device else {
                 return
             }
             
-            let currentCaptureDevice = self.captureDeviceInput.device
+//            let currentCaptureDevice = self.captureDeviceInput.device
             let currentPosition = currentCaptureDevice.position
             
-            var preferredPosition = AVCaptureDevicePosition.Unspecified
+            var preferredPosition = AVCaptureDevicePosition.unspecified
             
             switch currentPosition {
-            case .Back:
-                preferredPosition = .Front
-            case .Unspecified, .Front:
-                preferredPosition = .Back
+            case .back:
+                preferredPosition = .front
+            case .unspecified, .front:
+                preferredPosition = .back
             }
             
             if let videoDevice = self.captureDeviceAtPosition(preferredPosition) {
@@ -392,15 +402,15 @@ class CameraViewController: UIViewController {
                 
                 if (error == nil && self.captureSession.canAddInput(videoDeviceInput)) {
                     
-                    NSNotificationCenter.defaultCenter().removeObserver(self, name: AVCaptureDeviceSubjectAreaDidChangeNotification, object: currentCaptureDevice)
+                    NotificationCenter.default.removeObserver(self, name: NSNotification.Name.AVCaptureDeviceSubjectAreaDidChange, object: currentCaptureDevice)
                     
-                    if (preferredPosition == .Front) {
-                        self.setFlashMode(.Off, forDevice: videoDevice)
+                    if (preferredPosition == .front) {
+                        self.setFlashMode(.off, forDevice: videoDevice)
                     } else {
-                        self.setFlashMode(.Auto, forDevice: videoDevice)
+                        self.setFlashMode(.auto, forDevice: videoDevice)
                     }
                     
-                    NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.deviceSubjectAreaDidChange(_:)), name: AVCaptureDeviceSubjectAreaDidChangeNotification, object: videoDevice)
+                    NotificationCenter.default.addObserver(self, selector: #selector(self.deviceSubjectAreaDidChange(_:)), name: NSNotification.Name.AVCaptureDeviceSubjectAreaDidChange, object: videoDevice)
                     
                     self.captureSession.addInput(videoDeviceInput)
                     self.captureDeviceInput = videoDeviceInput
@@ -413,10 +423,10 @@ class CameraViewController: UIViewController {
         }
     }
     
-    func focusAndExposureTap(gesture: UITapGestureRecognizer) {
+    func focusAndExposureTap(_ gesture: UITapGestureRecognizer) {
         let previewLayer = previewView.layer as! AVCaptureVideoPreviewLayer
-        let devicePoint = previewLayer.captureDevicePointOfInterestForPoint(gesture.locationInView(gesture.view))
-        focusWithMode(.AutoFocus, exposureWithMode: .AutoExpose, atDevicePoint: devicePoint, monitorSubjectAreaChange: true)
+        let devicePoint = previewLayer.captureDevicePointOfInterest(for: gesture.location(in: gesture.view))
+        focusWithMode(.autoFocus, exposureWithMode: .autoExpose, atDevicePoint: devicePoint, monitorSubjectAreaChange: true)
     }
     
     
@@ -424,97 +434,95 @@ class CameraViewController: UIViewController {
     
     // MARK: Image Capture
     func snapPhoto() {
-        dispatch_async(sessionQueue) { 
-            guard let videoConnection = self.stillImageOutput.connectionWithMediaType(AVMediaTypeVideo) else {
+        sessionQueue.async { 
+            guard let videoConnection = self.stillImageOutput.connection(withMediaType: AVMediaTypeVideo) else {
                 return
             }
             
             let previewLayer = self.previewView.layer as! AVCaptureVideoPreviewLayer
             videoConnection.videoOrientation = previewLayer.connection.videoOrientation
             
-            self.stillImageOutput.captureStillImageAsynchronouslyFromConnection(videoConnection, completionHandler: { (sampleBuffer, error) in
+            self.stillImageOutput.captureStillImageAsynchronously(from: videoConnection, completionHandler: { (sampleBuffer, error) in
                 if (sampleBuffer != nil) {
                     let imageData = AVCaptureStillImageOutput.jpegStillImageNSDataRepresentation(sampleBuffer)
                     
-                    let capturedImage = UIImage(data: imageData)
+                    let capturedImage = UIImage(data: imageData!)
                     self.goToPreviewImage(capturedImage!)
                 }
             })
         }
     }
     
-    func goToPreviewImage(image: UIImage) {
-        dispatch_async(dispatch_get_main_queue()) { 
-            let vc = self.storyboard?.instantiateViewControllerWithIdentifier("ImagePreviewViewController") as! ImagePreviewViewController
+    func goToPreviewImage(_ image: UIImage) {
+        DispatchQueue.main.async { 
+            let vc = self.storyboard?.instantiateViewController(withIdentifier: "ImagePreviewViewController") as! ImagePreviewViewController
             vc.imageToPreview = image
-            self.presentViewController(vc, animated: true, completion: nil)
+            self.present(vc, animated: true, completion: nil)
         }
     }
     
     
     // MARK: KVO and Notifications
-    private func addObservers() {
+    fileprivate func addObservers() {
         
-        captureSession.addObserver(self, forKeyPath: "running", options: NSKeyValueObservingOptions.New, context: SessionRunningContext)
-        stillImageOutput.addObserver(self, forKeyPath: "capturingStillImage", options: NSKeyValueObservingOptions.New, context: CapturingStillImageContext)
+//        captureSession.addObserver(self, forKeyPath: "running", options: NSKeyValueObservingOptions.new, context: SessionRunningContext)
+//        stillImageOutput.addObserver(self, forKeyPath: "capturingStillImage", options: NSKeyValueObservingOptions.new, context: CapturingStillImageContext)
+        
+        captureSession.addObserver(self, forKeyPath: "running", options: NSKeyValueObservingOptions.new, context: &sessionRunningContext)
+        stillImageOutput.addObserver(self, forKeyPath: "capturingStillImage", options: NSKeyValueObservingOptions.new, context: &capturingStillImageContext)
         
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.deviceSubjectAreaDidChange(_:)), name: AVCaptureDeviceSubjectAreaDidChangeNotification, object: captureDeviceInput.device)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.deviceSubjectAreaDidChange(_:)), name: NSNotification.Name.AVCaptureDeviceSubjectAreaDidChange, object: captureDeviceInput.device)
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.sessionRuntimeError(_:)), name: AVCaptureSessionRuntimeErrorNotification, object: captureSession)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.sessionWasInterrupted(_:)), name: AVCaptureSessionWasInterruptedNotification, object: captureSession)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.sessionInteruptionEnded(_:)), name: AVCaptureSessionInterruptionEndedNotification, object: captureSession)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.sessionRuntimeError(_:)), name: NSNotification.Name.AVCaptureSessionRuntimeError, object: captureSession)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.sessionWasInterrupted(_:)), name: NSNotification.Name.AVCaptureSessionWasInterrupted, object: captureSession)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.sessionInteruptionEnded(_:)), name: NSNotification.Name.AVCaptureSessionInterruptionEnded, object: captureSession)
     }
     
-    private func removeObservers() {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+    fileprivate func removeObservers() {
+        NotificationCenter.default.removeObserver(self)
         
-        captureSession.removeObserver(self, forKeyPath: "running", context: SessionRunningContext)
-        stillImageOutput.removeObserver(self, forKeyPath: "capturingStillImage", context: CapturingStillImageContext)
+        captureSession.removeObserver(self, forKeyPath: "running", context: &sessionRunningContext)
+        stillImageOutput.removeObserver(self, forKeyPath: "capturingStillImage", context: &capturingStillImageContext)
     }
     
-    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         
-        switch context {
-        case SessionRunningContext:
-            
-            let isSessionRunning = change![NSKeyValueChangeNewKey] as! Bool
-            
+        if (context == &sessionRunningContext) {
+            let isSessionRunning = change![NSKeyValueChangeKey.newKey] as! Bool
             print("Is Session Running: \(isSessionRunning)")
+        } else if (context == &capturingStillImageContext) {
+            let isCapturingStillImage = change![NSKeyValueChangeKey.newKey] as! Bool
             
-        case CapturingStillImageContext:
-            
-            let isCapturingStillImage = change![NSKeyValueChangeNewKey] as! Bool
             if isCapturingStillImage {
-                dispatch_async(dispatch_get_main_queue()) {
+                DispatchQueue.main.async {
                     self.previewView.layer.opacity = 0.0
-                    UIView.animateWithDuration(0.25) {
+                    UIView.animate(withDuration: 0.25, animations: {
                         self.previewView.layer.opacity = 1.0
-                    }
+                    })
                 }
             }
-            
-        default:
-            super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
+        } else {
+            super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
         }
     }
     
     // Notifications
     
-    func deviceSubjectAreaDidChange(notification: NSNotification) {
-        let devicePoint = CGPointMake(0.5, 0.5)
-        focusWithMode(.ContinuousAutoFocus, exposureWithMode: .ContinuousAutoExposure, atDevicePoint: devicePoint, monitorSubjectAreaChange: false)
+    func deviceSubjectAreaDidChange(_ notification: Notification) {
+        let devicePoint = CGPoint(x: 0.5, y: 0.5)
+        focusWithMode(.continuousAutoFocus, exposureWithMode: .continuousAutoExposure, atDevicePoint: devicePoint, monitorSubjectAreaChange: false)
     }
     
-    func sessionRuntimeError(notification: NSNotification) {
+    func sessionRuntimeError(_ notification: Notification) {
         let error = notification.userInfo![AVCaptureSessionErrorKey] as! NSError
         print("Capture Session Runtime Error: \(error)")
         
-        if (error.code == AVError.MediaServicesWereReset.rawValue) {
-            dispatch_async(sessionQueue, {
+        if (error.code == AVError.Code.mediaServicesWereReset.rawValue) {
+            sessionQueue.async(execute: {
                 if (self.isSessionRunning) {
                     self.captureSession.startRunning()
-                    self.isSessionRunning = self.captureSession.running
+                    self.isSessionRunning = self.captureSession.isRunning
                 } else {
                     // show alert
                 }
@@ -524,21 +532,21 @@ class CameraViewController: UIViewController {
         }
     }
     
-    func sessionWasInterrupted(notification: NSNotification) {
+    func sessionWasInterrupted(_ notification: Notification) {
         print("Session was interrupted")
     }
     
-    func sessionInteruptionEnded(notification: NSNotification) {
+    func sessionInteruptionEnded(_ notification: Notification) {
         print("Session Interruption Ended")
     }
     
     func resumeInterruptedSession() {
-        dispatch_async(sessionQueue) {
+        sessionQueue.async {
             
             self.captureSession.startRunning()
-            self.isSessionRunning = self.captureSession.running
+            self.isSessionRunning = self.captureSession.isRunning
             
-            if (self.captureSession.running == false) {
+            if (self.captureSession.isRunning == false) {
                 // showAlert
             }
             

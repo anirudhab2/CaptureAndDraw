@@ -12,10 +12,10 @@ class DrawingViewController: UIViewController {
     
     var imageToEdit: UIImage?
     
-    private var canvas: Canvas!
-    private var toolbar: DrawingToolbar!
-    private var palette: ColorPalette!
-    private var brushControl: BrushControl!
+    fileprivate var canvas: Canvas!
+    fileprivate var toolbar: DrawingToolbar!
+    fileprivate var palette: ColorPalette!
+    fileprivate var brushControl: BrushControl!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,16 +37,16 @@ class DrawingViewController: UIViewController {
         brushControl.delegate = self
         view.addSubview(brushControl)
         
-        brushControl.hidden = true
+        brushControl.isHidden = true
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         updateToolbar()
     }
     
-    override func prefersStatusBarHidden() -> Bool {
+    override var prefersStatusBarHidden : Bool {
         return true
     }
 
@@ -55,7 +55,7 @@ class DrawingViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    private func updateToolbar() {
+    fileprivate func updateToolbar() {
         toolbar.brushButton.backgroundColor = canvas.brush.color
         brushControl.brushWidth = canvas.brush.width
         brushControl.brushColor = canvas.brush.color
@@ -64,30 +64,30 @@ class DrawingViewController: UIViewController {
 
 // MARK: - Canvas Delegate
 extension DrawingViewController: CanvasDelegate {
-    func canvas(canvas: Canvas, willStartDrawing drawing: Drawing) {
-        UIView.animateWithDuration(0.2) {
+    func canvas(_ canvas: Canvas, willStartDrawing drawing: Drawing) {
+        UIView.animate(withDuration: 0.2, animations: {
             self.toolbar.alpha = 0.0
             self.palette.alpha = 0.0
             self.brushControl.alpha = 0
-        }
+        }) 
     }
     
-    func canvas(canvas: Canvas, didUpdateDrawing drawing: Drawing, mergedImage image: UIImage?) {
+    func canvas(_ canvas: Canvas, didUpdateDrawing drawing: Drawing, mergedImage image: UIImage?) {
        
         updateToolbar()
         
-        UIView.animateWithDuration(0.2) {
+        UIView.animate(withDuration: 0.2, animations: {
             self.toolbar.alpha = 1.0
             self.palette.alpha = 1.0
             self.brushControl.alpha = 1.0
-        }
+        }) 
     }
     
-    func canvas(canvas: Canvas, didSaveDrawing drawing: Drawing, mergedImage image: UIImage?) {
+    func canvas(_ canvas: Canvas, didSaveDrawing drawing: Drawing, mergedImage image: UIImage?) {
         if let validImage = image {
             if let imagePreviewVC = self.presentingViewController as? ImagePreviewViewController {
                 imagePreviewVC.imageToPreview = validImage
-                self.dismissViewControllerAnimated(false, completion: nil)
+                self.dismiss(animated: false, completion: nil)
             }
         }
     }
@@ -113,22 +113,22 @@ extension DrawingViewController: DrawingToolbarDelegate {
     
     func brushTapped() {
         canvas.brush.color = palette.selectedColor
-        brushControl.hidden = !brushControl.hidden
+        brushControl.isHidden = !brushControl.isHidden
     }
     
     func eraserTapped() {
-        canvas.brush.color = UIColor.clearColor()
-        brushControl.hidden = true
+        canvas.brush.color = UIColor.clear
+        brushControl.isHidden = true
     }
     
-    func toolbar(toolbar: DrawingToolbar, didChangedBrushWidth width: CGFloat) {
+    func toolbar(_ toolbar: DrawingToolbar, didChangedBrushWidth width: CGFloat) {
         canvas.brush.width = width
     }
 }
 
 // MARK: - Color Palette Delegate
 extension DrawingViewController: ColorPaletteDelegate {
-    func colorPalette(colorPalette: ColorPalette, didChooseColor color: UIColor) {
+    func colorPalette(_ colorPalette: ColorPalette, didChooseColor color: UIColor) {
         canvas.brush.color = color
         toolbar.brushButton.backgroundColor = color
         brushControl.brushColor = color
@@ -137,7 +137,7 @@ extension DrawingViewController: ColorPaletteDelegate {
 
 // MARK: - Brush Size Control Delegate
 extension DrawingViewController: BrushControlDelegate {
-    func brushControl(brushControl: BrushControl, didChangeBrushWidth width: CGFloat) {
+    func brushControl(_ brushControl: BrushControl, didChangeBrushWidth width: CGFloat) {
         canvas.brush.width = width
     }
 }

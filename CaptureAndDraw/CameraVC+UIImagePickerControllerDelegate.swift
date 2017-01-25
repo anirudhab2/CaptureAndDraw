@@ -10,29 +10,29 @@ import UIKit
 
 extension CameraViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     func openFromGallery() {
-        dispatch_async(dispatch_get_main_queue()) {
+        DispatchQueue.main.async {
             let picker = UIImagePickerController()
-            picker.sourceType = .PhotoLibrary
+            picker.sourceType = .photoLibrary
             picker.allowsEditing = false
             picker.delegate = self
-            self.presentViewController(picker, animated: true, completion: nil)
+            self.present(picker, animated: true, completion: nil)
         }
     }
     
-    func showOpenedImageFromPicker(image: UIImage) {
+    func showOpenedImageFromPicker(_ image: UIImage) {
         self.goToPreviewImage(image)
     }
     
-    func imagePickerControllerDidCancel(picker: UIImagePickerController) {
-        dispatch_async(dispatch_get_main_queue()) {
-            picker.dismissViewControllerAnimated(true, completion: nil)
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        DispatchQueue.main.async {
+            picker.dismiss(animated: true, completion: nil)
         }
     }
     
-    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         
         if let originalImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
-            picker.dismissViewControllerAnimated(false, completion: { 
+            picker.dismiss(animated: false, completion: { 
                 self.showOpenedImageFromPicker(originalImage)
             })
         }

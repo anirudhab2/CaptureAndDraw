@@ -11,9 +11,9 @@ import UIKit
 // MARK: - Canvas Delegate
 @objc
 protocol CanvasDelegate {
-    optional func canvas(canvas: Canvas, didUpdateDrawing drawing: Drawing, mergedImage image: UIImage?)
-    optional func canvas(canvas: Canvas, didSaveDrawing drawing: Drawing, mergedImage image: UIImage?)
-    optional func canvas(canvas: Canvas, willStartDrawing drawing: Drawing)
+    @objc optional func canvas(_ canvas: Canvas, didUpdateDrawing drawing: Drawing, mergedImage image: UIImage?)
+    @objc optional func canvas(_ canvas: Canvas, didSaveDrawing drawing: Drawing, mergedImage image: UIImage?)
+    @objc optional func canvas(_ canvas: Canvas, willStartDrawing drawing: Drawing)
     
     //    func brush() -> Brush?
 }
@@ -24,30 +24,30 @@ class Canvas: UIView {
     weak var delegate: CanvasDelegate?
     
     // Subviews
-    private var backgroundImageView = UIImageView()
-    private var mainDrawingImageView = UIImageView()
-    private var tempDrawingImageView = UIImageView()
+    fileprivate var backgroundImageView = UIImageView()
+    fileprivate var mainDrawingImageView = UIImageView()
+    fileprivate var tempDrawingImageView = UIImageView()
     
     // Tools
     var brush = Brush()
-    private var drawing = Drawing()
-    private let drawingSession = DrawingSession()
-    private let path = UIBezierPath()
+    fileprivate var drawing = Drawing()
+    fileprivate let drawingSession = DrawingSession()
+    fileprivate let path = UIBezierPath()
     
     // Variables
-    private var touchPointMoved = false
-    private var touchPointIndex = -1
-    private var touchpoints = [CGPoint](count: 5, repeatedValue: CGPointZero)
+    fileprivate var touchPointMoved = false
+    fileprivate var touchPointIndex = -1
+    fileprivate var touchpoints = [CGPoint](repeating: CGPoint.zero, count: 5)
     
-    private var saved = false
-    private let scale = UIScreen.mainScreen().scale
+    fileprivate var saved = false
+    fileprivate let scale = UIScreen.main.scale
     
     
     // MARK: Initialization
     init(backgroundImage image: UIImage? = nil) {
-        super.init(frame: CGRectZero)
+        super.init(frame: CGRect.zero)
         
-        path.lineCapStyle = .Round
+        path.lineCapStyle = .round
         
         backgroundImageView.image = image
         
@@ -62,24 +62,24 @@ class Canvas: UIView {
         super.init(coder: aDecoder)
     }
     
-    private func addSubviews() {
-        backgroundColor = UIColor.whiteColor()
+    fileprivate func addSubviews() {
+        backgroundColor = UIColor.white
         
         self.addSubview(backgroundImageView)
-        backgroundImageView.contentMode = .ScaleAspectFit
-        backgroundImageView.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
+        backgroundImageView.contentMode = .scaleAspectFit
+        backgroundImageView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         
         self.addSubview(mainDrawingImageView)
-        mainDrawingImageView.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
+        mainDrawingImageView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         
         self.addSubview(tempDrawingImageView)
-        tempDrawingImageView.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
+        tempDrawingImageView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
     }
 }
 
 // MARK: - Touch Controls
 extension Canvas {
-    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         saved = false
         touchPointMoved = false
         touchPointIndex = 0
@@ -88,17 +88,17 @@ extension Canvas {
         
         
         let touch: UITouch = touches.first!
-        touchpoints[0] = touch.locationInView(self)
+        touchpoints[0] = touch.location(in: self)
         
         willStartDrawing()
     }
     
-    override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         
         touchPointMoved = true
         
         let touch = touches.first!
-        let touchPoint = touch.locationInView(self)
+        let touchPoint = touch.location(in: self)
         
         touchPointIndex += 1
         touchpoints[touchPointIndex] = touchPoint
@@ -107,8 +107,8 @@ extension Canvas {
             
             touchpoints[3] = CGPoint(x: (touchpoints[2].x + touchpoints[4].x)/2, y: (touchpoints[2].y + touchpoints[4].y)/2)
             
-            path.moveToPoint(touchpoints[0])
-            path.addCurveToPoint(touchpoints[3], controlPoint1: touchpoints[1], controlPoint2: touchpoints[2])
+            path.move(to: touchpoints[0])
+            path.addCurve(to: touchpoints[3], controlPoint1: touchpoints[1], controlPoint2: touchpoints[2])
             
             touchpoints[0] = touchpoints[3]
             touchpoints[1] = touchpoints[4]
@@ -118,11 +118,11 @@ extension Canvas {
         drawStroke()
     }
     
-    override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         
         if (touchPointMoved == false) {
-            path.moveToPoint(touchpoints[0])
-            path.addLineToPoint(touchpoints[0])
+            path.move(to: touchpoints[0])
+            path.addLine(to: touchpoints[0])
             drawStroke()
         }
         
@@ -133,14 +133,14 @@ extension Canvas {
         touchPointIndex = 0
     }
     
-    override func touchesCancelled(touches: Set<UITouch>?, withEvent event: UIEvent?) {
-        self.touchesEnded(touches!, withEvent: event)
+    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.touchesEnded(touches, with: event)
     }
 }
 
 // MARK: - Drawing
 extension Canvas {
-    private func drawStroke() {
+    fileprivate func drawStroke() {
         // Renders the drawn stroke to tempDrawingImageView temporarily
         
         UIGraphicsBeginImageContextWithOptions(self.frame.size, false, 0.0)
@@ -150,11 +150,11 @@ extension Canvas {
         brush.color.setStroke()
         
         if (brush.isEraser) {
-            mainDrawingImageView.image?.drawInRect(self.bounds)
+            mainDrawingImageView.image?.draw(in: self.bounds)
         }
         
         
-        path.strokeWithBlendMode(brush.blendMode, alpha: 1)
+        path.stroke(with: brush.blendMode, alpha: 1)
         
         let targetImageView = brush.isEraser ? mainDrawingImageView : tempDrawingImageView
         targetImageView.image = UIGraphicsGetImageFromCurrentImageContext()
@@ -162,13 +162,13 @@ extension Canvas {
         UIGraphicsEndImageContext()
     }
     
-    private func mergeStrokes() {
+    fileprivate func mergeStrokes() {
         // Add the temporary stroke to main Drawing
         
         UIGraphicsBeginImageContextWithOptions(self.frame.size, false, 0.0)
         
-        mainDrawingImageView.image?.drawInRect(self.bounds)
-        tempDrawingImageView.image?.drawInRect(self.bounds)
+        mainDrawingImageView.image?.draw(in: self.bounds)
+        tempDrawingImageView.image?.draw(in: self.bounds)
         
         mainDrawingImageView.image = UIGraphicsGetImageFromCurrentImageContext()
         drawingSession.append(currentDrawing())
@@ -177,55 +177,55 @@ extension Canvas {
         UIGraphicsEndImageContext()
     }
     
-    private func mergeStrokesAndImages() -> UIImage {
+    fileprivate func mergeStrokesAndImages() -> UIImage {
         // Merge strokes, existing and background images
         
         UIGraphicsBeginImageContextWithOptions(self.frame.size, false, 0.0)
         
         if (backgroundImageView.image != nil) {
             let rect = centeredRectForImage(backgroundImageView.image!)
-            backgroundImageView.image?.drawInRect(rect)
+            backgroundImageView.image?.draw(in: rect)
         }
         
-        mainDrawingImageView.image?.drawInRect(self.bounds)
+        mainDrawingImageView.image?.draw(in: self.bounds)
         
         let mergedImage = UIGraphicsGetImageFromCurrentImageContext()
         
         UIGraphicsEndImageContext()
         
-        return mergedImage
+        return mergedImage!
     }
 }
 
 // MARK: - Drawing Session Management
 extension Canvas {
-    private func currentDrawing() -> Drawing {
+    fileprivate func currentDrawing() -> Drawing {
         return Drawing(stroke: mainDrawingImageView.image, background: backgroundImageView.image)
     }
     
-    private func updateByLastSession() {
+    fileprivate func updateByLastSession() {
         let lastSession = drawingSession.lastSession()
         mainDrawingImageView.image = lastSession?.stroke
         backgroundImageView.image = lastSession?.background
     }
     
-    private func willStartDrawing() {
+    fileprivate func willStartDrawing() {
         delegate?.canvas?(self, willStartDrawing: currentDrawing())
     }
     
-    private func didUpdateCanvas() {
+    fileprivate func didUpdateCanvas() {
         delegate?.canvas?(self, didUpdateDrawing: currentDrawing(), mergedImage: mergeStrokesAndImages())
     }
     
-    private func didSaveCanvas() {
+    fileprivate func didSaveCanvas() {
         delegate?.canvas?(self, didSaveDrawing: drawing, mergedImage: mergeStrokesAndImages())
     }
     
-    private func isStrokeEqual() -> Bool {
+    fileprivate func isStrokeEqual() -> Bool {
         return compare(drawing.stroke, isEqualTo: mainDrawingImageView.image)
     }
     
-    private func isBackgroundEqual() -> Bool {
+    fileprivate func isBackgroundEqual() -> Bool {
         return compare(drawing.background, isEqualTo: backgroundImageView.image)
     }
     
@@ -248,7 +248,7 @@ extension Canvas {
     }
     
     
-    func update(backgroundImage: UIImage?) {
+    func update(_ backgroundImage: UIImage?) {
         backgroundImageView.image = backgroundImage
         drawingSession.append(currentDrawing())
         saved = canSave()
@@ -286,7 +286,7 @@ extension Canvas {
 
 // MARK: - Utilities
 extension Canvas {
-    private func centeredRectForImage(image: UIImage) -> CGRect {
+    fileprivate func centeredRectForImage(_ image: UIImage) -> CGRect {
         
         if (self.frame.size == image.size) {
             return self.frame
@@ -316,7 +316,7 @@ extension Canvas {
         return rect
     }
     
-    private func compare(image1: UIImage?, isEqualTo image2: UIImage?) -> Bool {
+    fileprivate func compare(_ image1: UIImage?, isEqualTo image2: UIImage?) -> Bool {
         if (image1 == nil && image2 == nil) {
             return true
         } else if (image1 == nil || image2 == nil) {

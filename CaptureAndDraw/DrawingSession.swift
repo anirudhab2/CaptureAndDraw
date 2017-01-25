@@ -11,16 +11,16 @@ import UIKit
 // A Session to manage undo, redo, update and reset actions
 class DrawingSession: NSObject {
 
-    private let maxSessionSize = 50
-    private var undoSessionList: [Drawing] = []
-    private var redoSessionList: [Drawing] = []
-    private var backgroundSession: Drawing?
+    fileprivate let maxSessionSize = 50
+    fileprivate var undoSessionList: [Drawing] = []
+    fileprivate var redoSessionList: [Drawing] = []
+    fileprivate var backgroundSession: Drawing?
     
     override init() {
         super.init()
     }
     
-    private func appendUndo(session: Drawing?) {
+    fileprivate func appendUndo(_ session: Drawing?) {
         if (session == nil) {
             return
         }
@@ -32,7 +32,7 @@ class DrawingSession: NSObject {
         undoSessionList.append(session!)
     }
     
-    private func appendRedo(session: Drawing?) {
+    fileprivate func appendRedo(_ session: Drawing?) {
         if (session == nil) {
             return
         }
@@ -44,11 +44,11 @@ class DrawingSession: NSObject {
         redoSessionList.append(session!)
     }
     
-    private func resetUndo() {
+    fileprivate func resetUndo() {
         undoSessionList.removeAll()
     }
     
-    private func resetRedo() {
+    fileprivate func resetRedo() {
         redoSessionList.removeAll()
     }
     
@@ -63,13 +63,13 @@ class DrawingSession: NSObject {
         return nil
     }
     
-    func appendBackground(session: Drawing?) {
+    func appendBackground(_ session: Drawing?) {
         if (session != nil) {
             backgroundSession = session
         }
     }
     
-    func append(session: Drawing?) {
+    func append(_ session: Drawing?) {
         appendUndo(session)
         resetRedo()
     }

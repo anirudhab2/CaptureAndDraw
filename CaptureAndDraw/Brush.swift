@@ -11,14 +11,14 @@ import UIKit
 // Our Main Drawing Tool
 class Brush: NSObject {
     
-    var color: UIColor = UIColor.blackColor() {
+    var color: UIColor = UIColor.black {
         willSet(newValue) {
-            isEraser = (newValue == UIColor.clearColor())
-            blendMode = isEraser ? CGBlendMode.Clear : CGBlendMode.Normal
+            isEraser = (newValue == UIColor.clear)
+            blendMode = isEraser ? CGBlendMode.clear : CGBlendMode.normal
         }
     }
     
     var width: CGFloat = 20.0
     var isEraser: Bool = false
-    var blendMode: CGBlendMode = CGBlendMode.Normal
+    var blendMode: CGBlendMode = CGBlendMode.normal
 }
